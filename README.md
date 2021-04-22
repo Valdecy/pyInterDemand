@@ -1,5 +1,5 @@
 # Intermittent Demand
-pyID a python Library for Intermittent Demand Methods: Croston, SBA, SBJ, TSB, HES, LES and SES
+The pyID is a python Library for Intermittent Demand Methods: Croston, SBA, SBJ, TSB, HES, LES and SES
 
 Try it in **Colab**: 
 
