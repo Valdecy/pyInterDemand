@@ -1,8 +1,9 @@
 # pyInterDemand - Intermittent Demand Library
 
-Demand forecasting is a critical component of supply chain management and business operations. While traditional demand forecasting methods are geared towards continuous and stable demand patterns, intermittent demand—characterized by irregular or sporadic purchase events—presents a unique set of challenges. pyInterDemand is a Python library designed to address these challenges by offering a comprehensive suite of algorithms tailored for intermittent demand forecasting. 
+Demand forecasting is a critical component of supply chain management and business operations. While traditional demand forecasting methods are geared towards continuous and stable demand patterns, intermittent demand characterized by irregular or sporadic purchase events presents a unique set of challenges. pyInterDemand is a Python library designed to address these challenges by offering a comprehensive suite of algorithms tailored for intermittent demand forecasting. 
 
 The supported algorithms are:
+
 **Croston** - Croston's method separates the intermittent demand data into two separate sequences, one for the non-zero demand and another for the intervals between non-zero demands. The method then applies separate exponential smoothing on both.
 
 **SBA (Syntetos & Boylan Approximation)** - This approach extends Croston's method by adjusting the smoothing parameter based on the bias in the forecast error.
@@ -38,11 +39,11 @@ data = {
        'Value': pd.Series([5, 10, 0, 0, 0, 0, 7, 0, 0, 0, 6, 0]),
        }
 dataset         = pd.DataFrame(data)
-dataset['DATE'] = pd.to_datetime(dataset['DATE']).map(lambda x: x.strftime('%d-%m-%Y'))
+dataset['DATE'] = pd.to_datetime(dataset['DATE'], dayfirst = True).map(lambda x: x.strftime('%d-%m-%Y'))
 
 # Prepare Time Series TS
 ts       = dataset['Value'].copy(deep = True)
-ts.index = pd.DatetimeIndex(dataset['DATE'])
+ts.index = pd.DatetimeIndex(dataset['DATE'], dayfirst = True)
 ts       = ts.sort_index()
 ts       = ts.reindex(pd.date_range(ts.index.min(), ts.index.max()), fill_value = 0)
 ts       = ts.loc[ts[(ts != 0)].first_valid_index():]
