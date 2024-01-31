@@ -34,7 +34,7 @@ def plot_int_demand(ts, test = [], size_x = 10, size_y = 10, bar_width = 1, pred
     return
 
 # Function: V & Q
-def v_q_values(ts):
+def v_q_values_(ts):
     v  = ts[ts > 0]
     q  = []
     x1 = 1
@@ -47,10 +47,22 @@ def v_q_values(ts):
                 x1 = x2-1
     return v, np.asarray(q)
 
+# Function: V & Q
+def v_q_values(ts):
+    v     = ts[ts > 0]
+    q     = []
+    count = 0  
+    for i, val in enumerate(ts):
+        count = count + 1
+        if (val > 0):
+            q.append(count)  
+            count = 0  
+    return v, np.asarray(q)
+
 # Function: Classification
 def classification(ts):
     v, q         = v_q_values(ts)
-    adi          = sum(q)/len(v)
+    adi          = len(ts) / len(ts[ts > 0]) if len(ts[ts > 0]) > 0 else float('inf')
     cv_squared   = ( sum( ( (v - ts.mean() )**2)/ len(ts) )/ ts.mean() )
     f_type = 'Smooth'
     if (adi > 1.32 and cv_squared < 0.49 ):
@@ -98,7 +110,8 @@ def croston_method(ts, alpha = 0.1, n_steps = 1, freq = '1d'):
             idx_1        = ts.index.get_loc(date_idx[i])
             idx_2        = v.index.get_loc (date_idx[i])
             v_i[idx_1+1] = alpha*v[idx_2] + (1 - alpha)*v_i[idx_1]
-            q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            #q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            q_i[idx_1+1] = alpha*q[idx_2] + (1 - alpha)*q_i[idx_1]
             if (q_i[idx_1+1] != 0):
                 f_i[idx_1+1] = v_i[idx_1+1]/q_i[idx_1+1]
             else:
@@ -134,7 +147,8 @@ def sba_method(ts, alpha = 0.1, n_steps = 1, freq = '1d'):
             idx_1        = ts.index.get_loc(date_idx[i])
             idx_2        = v.index.get_loc(date_idx[i])
             v_i[idx_1+1] = alpha*v[idx_2] + (1 - alpha)*v_i[idx_1]
-            q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            #q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            q_i[idx_1+1] = alpha*q[idx_2] + (1 - alpha)*q_i[idx_1]
             if (q_i[idx_1+1] != 0):
                 f_i[idx_1+1] = (1 - alpha/(2))*(v_i[idx_1+1]/q_i[idx_1+1])
             else:
@@ -170,7 +184,8 @@ def sbj_method(ts, alpha = 0.1, n_steps = 1, freq = '1d'):
             idx_1        = ts.index.get_loc(date_idx[i])
             idx_2        = v.index.get_loc(date_idx[i])
             v_i[idx_1+1] = alpha*v[idx_2] + (1 - alpha)*v_i[idx_1]
-            q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            #q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            q_i[idx_1+1] = alpha*q[idx_2] + (1 - alpha)*q_i[idx_1]
             if (q_i[idx_1+1] != 0):
                 f_i[idx_1+1] = (1 - alpha/(2 - alpha))*(v_i[idx_1+1]/q_i[idx_1+1])
             else:
@@ -206,7 +221,8 @@ def tsb_method(ts, alpha = 0.1, beta = 0.1, n_steps = 1, freq = '1d'):
             idx_1        = ts.index.get_loc(date_idx[i])
             idx_2        = v.index.get_loc(date_idx[i])
             v_i[idx_1+1] = alpha*v[idx_2] + (1 - alpha)*v_i[idx_1]
-            q_i[idx_1+1] = beta + (1 - beta)*int(q_i[idx_1])
+            #q_i[idx_1+1] = beta + (1 - beta)*int(q_i[idx_1])
+            q_i[idx_1+1] = beta + (1 - beta)*q_i[idx_1]
             f_i[idx_1+1] = v_i[idx_1+1]*q_i[idx_1+1]
         else:
             idx_1        = ts.index.get_loc(date_idx[i])
@@ -218,7 +234,7 @@ def tsb_method(ts, alpha = 0.1, beta = 0.1, n_steps = 1, freq = '1d'):
     f_i        = pd.concat([f_i, new_series])  
     return v_i, q_i, f_i
 
-# Function: HES (Prestwich et al. 2014) Method ( https://doi.org/10.1016/j.ijforecast.2014.01.006 )
+# Function: HES (Hyperbolic-Exponential Smoothing) Method ( https://doi.org/10.1016/j.ijforecast.2014.01.006 )
 def hes_method(ts, alpha = 0.1, n_steps = 1, freq = '1d'):
     v, q          = v_q_values(ts)
     v_i           = ts.copy(deep = True)
@@ -236,7 +252,8 @@ def hes_method(ts, alpha = 0.1, n_steps = 1, freq = '1d'):
             idx_1        = ts.index.get_loc(date_idx[i])
             idx_2        = v.index.get_loc(date_idx[i])
             v_i[idx_1+1] = alpha*v[idx_2] + (1 - alpha)*v_i[idx_1]
-            q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            #q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            q_i[idx_1+1] = alpha*q[idx_2] + (1 - alpha)*q_i[idx_1]
             if (q_i[idx_1+1] != 0):
                 f_i[idx_1+1] = v_i[idx_1+1]/q_i[idx_1+1]
             else:
@@ -273,7 +290,8 @@ def les_method(ts, alpha = 0.1, n_steps = 1, freq = '1d'):
             idx_1        = ts.index.get_loc(date_idx[i])
             idx_2        = v.index.get_loc(date_idx[i])
             v_i[idx_1+1] = alpha*v[idx_2] + (1 - alpha)*v_i[idx_1]
-            q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            #q_i[idx_1+1] = int(alpha*q[idx_2] + (1 - alpha)*q_i[idx_1])
+            q_i[idx_1+1] = alpha*q[idx_2] + (1 - alpha)*q_i[idx_1]
             if (q_i[idx_1+1] != 0):
                 f_i[idx_1+1] = v_i[idx_1+1]/q_i[idx_1+1]
             else:
