@@ -64,7 +64,7 @@ def classification(ts):
     v, q         = v_q_values(ts)
     adi          = len(ts) / len(ts[ts > 0]) if len(ts[ts > 0]) > 0 else float('inf')
     cv_squared   = ( sum( ( (v - ts.mean() )**2)/ len(ts) )/ ts.mean() )
-    f_type = 'Smooth'
+    f_type       = 'Smooth'
     if (adi > 1.32 and cv_squared < 0.49 ):
       f_type = 'Intermittent'
     elif (adi > 1.32 and cv_squared > 0.49 ):
