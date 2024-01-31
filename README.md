@@ -12,7 +12,7 @@ The supported algorithms are:
 
 **TSB (Teunter, Syntetos & Babai)** - TSB offers a modification of Croston's method to improve forecast accuracy by dynamically updating the smoothing parameter.
 
-**HES (Prestwich et al. 2014)** - This is a generalized exponential smoothing technique adapted for intermittent demand scenarios.
+**HES (Hyperbolic-Exponential Smoothing)** - This is a generalized exponential smoothing technique adapted for intermittent demand scenarios.
 
 **LES (Linear Exponential Smoothing)** - LES employs a linear function to model the demand, smoothing the data points over time.
 
